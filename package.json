@@ -1,0 +1,22 @@
+{
+	"name": "@services/roblox",
+	"version": "1.0.0",
+	"license": "UNLICENSED",
+	"author": "ManHat",
+	"type": "module",
+	"main": "dist/roblox.js",
+	"types": "dist/roblox.d.ts",
+	"private": true,
+	"scripts": {
+		"build": "rimraf dist/ && npx tsc",
+		"test": "npm run build && node dist/test.js"
+	},
+	"devDependencies": {
+		"@types/node": "^20.14.9",
+		"rimraf": "^5.0.7",
+		"typescript": "^5.5.3"
+	},
+	"dependencies": {
+		"helpers": "github:ManHatos/Helpers"
+	}
+}
