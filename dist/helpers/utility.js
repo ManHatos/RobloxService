@@ -1,8 +1,3 @@
-export function validateCookie(cookie) {
-    const label = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_";
-    if (!cookie)
-        return false;
-    if (!cookie.startsWith(label))
-        return false;
-    return new RegExp(/^[0-9a-f]+$/i).test(cookie.replace(label, ""));
-}
+export const profileUrl = (id) => "https://roblox.com/users/" + id;
+export const groupUrl = (id) => "https://roblox.com/groups/" + id;
+export const placeUrl = (id) => "https://roblox.com/games/" + id;

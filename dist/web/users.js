@@ -8,15 +8,18 @@ export default class Users extends Web.Module {
             cookie: true,
         })
             .then((response) => {
-            if (response.status === 401)
-                throw new AppError({
-                    code: "UNAUTHORIZED",
-                    context: "Roblox service authentication failed\n%d",
-                });
+            if (!response.ok && response.status === 401)
+                switch (response.data.errors[0]?.code) {
+                    case 0:
+                        throw new AppError({
+                            code: "UNAUTHORIZED",
+                            context: "Roblox service authentication failed\n%d",
+                        });
+                }
             return this.handle(response).data;
         });
     }
-    async full(query) {
+    async get(query) {
         if (typeof query === "string") {
             if (query.length < 3)
                 throw new AppError({
@@ -28,7 +31,7 @@ export default class Users extends Web.Module {
                     code: "INVALID",
                     context: `The username \` ${query} \` is invalid.`,
                 });
-            await this.bulk([query]).then(([user]) => {
+            await this.batch([query]).then(([user]) => {
                 query = user.id;
             });
         }
@@ -42,11 +45,14 @@ export default class Users extends Web.Module {
         return await this.request
             .users("GET", "/users/" + query)
             .then((response) => {
-            if (response.status === 404)
-                throw new AppError({
-                    code: "NOT_FOUND",
-                    context: `The user ID \` ${query} \` was not found`,
-                });
+            if (!response.ok && response.status === 404)
+                switch (response.data.errors[0]?.code) {
+                    case 3:
+                        throw new AppError({
+                            code: "NOT_FOUND",
+                            context: `The user ID \` ${query} \` was not found`,
+                        });
+                }
             return this.handle(response).data;
         })
             .then((user) => ({
@@ -59,7 +65,7 @@ export default class Users extends Web.Module {
             verified: user.hasVerifiedBadge,
         }));
     }
-    async bulk(query, options) {
+    async batch(query, options) {
         if (query.length === 0)
             throw new AppError({
                 code: "INVALID",
@@ -74,11 +80,14 @@ export default class Users extends Web.Module {
                 },
             })
                 .then((response) => {
-                if (response.status === 400)
-                    throw new AppError({
-                        code: "BAD_REQUEST",
-                        context: "Too many usernames queried",
-                    });
+                if (!response.ok && response.status === 400)
+                    switch (response.data.errors[0]?.code) {
+                        case 2:
+                            throw new AppError({
+                                code: "BAD_REQUEST",
+                                context: "Too many usernames queried",
+                            });
+                    }
                 return this.handle(response).data?.data;
             })).filter((user) => options?.strict
                 ? user.name.toLowerCase() === user.requestedUsername.toLocaleLowerCase()
@@ -105,11 +114,14 @@ export default class Users extends Web.Module {
                 },
             })
                 .then((response) => {
-                if (response.status === 400)
-                    throw new AppError({
-                        code: "BAD_REQUEST",
-                        context: "Too many usernames queried",
-                    });
+                if (!response.ok && response.status === 400)
+                    switch (response.data.errors[0]?.code) {
+                        case 1:
+                            throw new AppError({
+                                code: "BAD_REQUEST",
+                                context: "Too many user IDs queried",
+                            });
+                    }
                 return this.handle(response).data?.data;
             });
             if (users.length === 0)
@@ -130,7 +142,7 @@ export default class Users extends Web.Module {
                 context: "Query is of invalid type\nAll array members must be of type `Roblox.User`'s `id` or `name`.",
             });
     }
-    search = async (query, options) => {
+    async search(query, options) {
         if (query.length < 3)
             throw new AppError({
                 code: "INVALID",
@@ -144,11 +156,14 @@ export default class Users extends Web.Module {
             },
         })
             .then((response) => {
-            if (response.status === 400)
-                throw new AppError({
-                    code: "FORBIDDEN",
-                    context: "The query was filtered",
-                });
+            if (!response.ok && response.status === 400)
+                switch (response.data.errors[0]?.code) {
+                    case 6:
+                        throw new AppError({
+                            code: "FORBIDDEN",
+                            context: "The query was filtered",
+                        });
+                }
             return this.handle(response).data.data;
         });
         if (users.length === 0)
@@ -163,6 +178,6 @@ export default class Users extends Web.Module {
             nameHistory: user.previousUsernames,
             verified: user.hasVerifiedBadge,
         }));
-    };
+    }
     avatars = new UserAvatars(this);
 }

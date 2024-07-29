@@ -32,15 +32,15 @@ export class UserAvatars extends Web.SubModule {
         });
         let transformed = avatars.map((avatar) => ({
             id: avatar.targetId,
-            state: avatar.state,
+            state: Roblox.AvatarStates[avatar.state],
             url: avatar.imageUrl || undefined,
             version: avatar.version,
         }));
         if (options?.retry !== false) {
             const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarState.Pending)
+                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
                 .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarState.Pending);
+            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
             if (pending.length !== 0) {
                 logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
                 transformed.push(...(await this.full(pending, options)));
@@ -77,15 +77,15 @@ export class UserAvatars extends Web.SubModule {
         });
         let transformed = avatars.map((avatar) => ({
             id: avatar.targetId,
-            state: avatar.state,
+            state: Roblox.AvatarStates[avatar.state],
             url: avatar.imageUrl || undefined,
             version: avatar.version,
         }));
         if (options?.retry !== false) {
             const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarState.Pending)
+                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
                 .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarState.Pending);
+            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
             if (pending.length !== 0) {
                 logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
                 transformed.push(...(await this.full(pending, options)));
@@ -122,15 +122,15 @@ export class UserAvatars extends Web.SubModule {
         });
         let transformed = avatars.map((avatar) => ({
             id: avatar.targetId,
-            state: avatar.state,
+            state: Roblox.AvatarStates[avatar.state],
             url: avatar.imageUrl || undefined,
             version: avatar.version,
         }));
         if (options?.retry !== false) {
             const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarState.Pending)
+                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
                 .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarState.Pending);
+            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
             if (pending.length !== 0) {
                 logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
                 transformed.push(...(await this.full(pending, options)));

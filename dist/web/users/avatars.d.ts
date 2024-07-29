@@ -11,13 +11,13 @@ export declare class UserAvatars extends Web.SubModule<Users> {
     bust(query: Arrays.AtLeast<Roblox.User["id"]>, options?: {
         size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "150x150" | "180x180" | "352x352" | "420x420";
         format?: "PNG" | "WEBP";
-        circular?: boolean;
+        circular?: true;
         retry?: false;
     }): Promise<Arrays.AtLeast<Roblox.Avatar>>;
     head(query: Arrays.AtLeast<Roblox.User["id"]>, options?: {
         size?: "48x48" | "50x50" | "60x60" | "75x75" | "100x100" | "110x110" | "150x150" | "180x180" | "352x352" | "420x420" | "720x720";
         format?: "PNG" | "JPEG" | "WEBP";
-        circular?: boolean;
+        circular?: true;
         retry?: false;
     }): Promise<Arrays.AtLeast<Roblox.Avatar>>;
 }
