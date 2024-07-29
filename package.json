@@ -17,6 +17,6 @@
 		"typescript": "^5.5.3"
 	},
 	"dependencies": {
-		"helpers": "github:ManHatos/Helpers"
+		"helpers": "github:ManHatos/Helpers#v1.1.0"
 	}
 }
