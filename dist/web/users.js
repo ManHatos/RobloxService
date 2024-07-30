@@ -1,7 +1,7 @@
 import { AppError } from "helpers";
 import * as Web from "./raw.js";
 import { UserAvatars } from "./users/avatars.js";
-export default class Users extends Web.Module {
+export class Users extends Web.Module {
     async me() {
         return await this.request
             .users("GET", "/users/authenticated", {
@@ -17,7 +17,12 @@ export default class Users extends Web.Module {
                         });
                 }
             return this.handle(response).data;
-        });
+        })
+            .then((user) => ({
+            id: BigInt(user.id),
+            name: user.name,
+            displayName: user.displayName,
+        }));
     }
     async get(query) {
         if (typeof query === "string") {
@@ -35,9 +40,9 @@ export default class Users extends Web.Module {
                 query = user.id;
             });
         }
-        if (typeof query !== "number")
+        if (typeof query !== "bigint")
             throw new AppError();
-        if (!isFinite(query) || query === 0)
+        if (!query || query === 0n)
             throw new AppError({
                 code: "INVALID",
                 context: `The user ID \` ${query} \` is invalid.`,
@@ -56,13 +61,13 @@ export default class Users extends Web.Module {
             return this.handle(response).data;
         })
             .then((user) => ({
-            id: user.id,
-            banned: user.isBanned,
-            createdAt: new Date(user.created),
-            description: user.description || undefined,
-            displayName: user.displayName,
+            id: BigInt(user.id),
             name: user.name,
+            displayName: user.displayName,
+            description: user.description || undefined,
+            banned: user.isBanned,
             verified: user.hasVerifiedBadge,
+            createdAt: new Date(user.created),
         }));
     }
     async batch(query, options) {
@@ -98,14 +103,14 @@ export default class Users extends Web.Module {
                     context: "No users found",
                 });
             return users.map((user) => ({
-                id: user.id,
-                displayName: user.displayName,
+                id: BigInt(user.id),
                 name: user.name,
+                displayName: user.displayName,
                 verified: user.hasVerifiedBadge,
                 queried: user.requestedUsername,
             }));
         }
-        else if (query.every((id) => typeof id === "number")) {
+        else if (query.every((id) => typeof id === "bigint")) {
             const users = await this.request
                 .users("POST", "/users", {
                 body: {
@@ -130,16 +135,16 @@ export default class Users extends Web.Module {
                     context: "No users found",
                 });
             return users.map((user) => ({
-                id: user.id,
-                displayName: user.displayName,
+                id: BigInt(user.id),
                 name: user.name,
+                displayName: user.displayName,
                 verified: user.hasVerifiedBadge,
             }));
         }
         else
             throw new AppError({
                 code: "BAD_REQUEST",
-                context: "Query is of invalid type\nAll array members must be of type `Roblox.User`'s `id` or `name`.",
+                context: "Query is of invalid type\nAll array members must be of type `User.id` or `User.name`.",
             });
     }
     async search(query, options) {
@@ -172,9 +177,9 @@ export default class Users extends Web.Module {
                 context: "No users found",
             });
         return users.map((user) => ({
-            displayName: user.displayName,
-            id: user.id,
+            id: BigInt(user.id),
             name: user.name,
+            displayName: user.displayName,
             nameHistory: user.previousUsernames,
             verified: user.hasVerifiedBadge,
         }));

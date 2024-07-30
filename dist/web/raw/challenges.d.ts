@@ -1,7 +1,7 @@
 import { Roblox } from "../../roblox.js";
 import * as Web from "../raw.js";
 export declare class Challenges {
-    protected auth: Web.Raw["auth"];
+    protected secrets: Web.Raw["secrets"];
     protected request: Web.Raw["request"];
     protected handle: Web.Raw["handle"];
     constructor(raw: Web.Raw);

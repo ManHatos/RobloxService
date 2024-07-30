@@ -4,7 +4,7 @@ import * as Web from "../raw.js";
 import { logger } from "../../helpers/internals.js";
 export class UserAvatars extends Web.SubModule {
     async full(query, options) {
-        const avatars = await this.request
+        return await this.request
             .thumbnails("GET", "/users/avatar", {
             params: {
                 userIds: String(query),
@@ -24,32 +24,36 @@ export class UserAvatars extends Web.SubModule {
                     case 4:
                         throw new AppError({
                             code: "INVALID",
-                            context: "An invalid user ID was requested",
+                            context: "An invalid user ID was queried",
                         });
                 }
             }
             return this.handle(response).data.data;
-        });
-        let transformed = avatars.map((avatar) => ({
-            id: avatar.targetId,
-            state: Roblox.AvatarStates[avatar.state],
-            url: avatar.imageUrl || undefined,
-            version: avatar.version,
-        }));
-        if (options?.retry !== false) {
-            const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
-                .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
-            if (pending.length !== 0) {
-                logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
-                transformed.push(...(await this.full(pending, options)));
+        })
+            .then((avatars) => {
+            return avatars.map((avatar) => ({
+                id: BigInt(avatar.targetId),
+                state: Roblox.AvatarStates[avatar.state],
+                url: avatar.imageUrl || undefined,
+                version: avatar.version,
+            }));
+        })
+            .then(async (avatars) => {
+            if (options?.retry !== false) {
+                const pending = avatars
+                    .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
+                    .map((avatar) => avatar.id);
+                avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
+                if (pending.length !== 0) {
+                    logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    avatars.push(...(await this.full(pending, options)));
+                }
             }
-        }
-        return transformed;
+            return avatars;
+        });
     }
     async bust(query, options) {
-        const avatars = await this.request
+        return await this.request
             .thumbnails("GET", "/users/avatar-bust", {
             params: {
                 userIds: String(query),
@@ -69,32 +73,36 @@ export class UserAvatars extends Web.SubModule {
                     case 4:
                         throw new AppError({
                             code: "INVALID",
-                            context: "An invalid user ID was requested",
+                            context: "An invalid user ID was queried",
                         });
                 }
             }
             return this.handle(response).data.data;
-        });
-        let transformed = avatars.map((avatar) => ({
-            id: avatar.targetId,
-            state: Roblox.AvatarStates[avatar.state],
-            url: avatar.imageUrl || undefined,
-            version: avatar.version,
-        }));
-        if (options?.retry !== false) {
-            const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
-                .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
-            if (pending.length !== 0) {
-                logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
-                transformed.push(...(await this.full(pending, options)));
+        })
+            .then((avatars) => {
+            return avatars.map((avatar) => ({
+                id: BigInt(avatar.targetId),
+                state: Roblox.AvatarStates[avatar.state],
+                url: avatar.imageUrl || undefined,
+                version: avatar.version,
+            }));
+        })
+            .then(async (avatars) => {
+            if (options?.retry !== false) {
+                const pending = avatars
+                    .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
+                    .map((avatar) => avatar.id);
+                avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
+                if (pending.length !== 0) {
+                    logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    avatars.push(...(await this.bust(pending, options)));
+                }
             }
-        }
-        return transformed;
+            return avatars;
+        });
     }
     async head(query, options) {
-        const avatars = await this.request
+        return await this.request
             .thumbnails("GET", "/users/avatar-headshot", {
             params: {
                 userIds: String(query),
@@ -114,28 +122,32 @@ export class UserAvatars extends Web.SubModule {
                     case 4:
                         throw new AppError({
                             code: "INVALID",
-                            context: "An invalid user ID was requested",
+                            context: "An invalid user ID was queried",
                         });
                 }
             }
             return this.handle(response).data.data;
-        });
-        let transformed = avatars.map((avatar) => ({
-            id: avatar.targetId,
-            state: Roblox.AvatarStates[avatar.state],
-            url: avatar.imageUrl || undefined,
-            version: avatar.version,
-        }));
-        if (options?.retry !== false) {
-            const pending = transformed
-                .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
-                .map((avatar) => avatar.id);
-            transformed = transformed.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
-            if (pending.length !== 0) {
-                logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
-                transformed.push(...(await this.full(pending, options)));
+        })
+            .then((avatars) => {
+            return avatars.map((avatar) => ({
+                id: BigInt(avatar.targetId),
+                state: Roblox.AvatarStates[avatar.state],
+                url: avatar.imageUrl || undefined,
+                version: avatar.version,
+            }));
+        })
+            .then(async (avatars) => {
+            if (options?.retry !== false) {
+                const pending = avatars
+                    .filter((avatar) => avatar.state === Roblox.AvatarStates.Pending)
+                    .map((avatar) => avatar.id);
+                avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
+                if (pending.length !== 0) {
+                    logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    avatars.push(...(await this.head(pending, options)));
+                }
             }
-        }
-        return transformed;
+            return avatars;
+        });
     }
 }

@@ -1,30 +1,33 @@
+import { Records } from "helpers";
 import { Roblox } from "../roblox.js";
 import { Secrets } from "../helpers/internals.js";
 export declare class Raw extends Secrets {
     constructor(secrets: Secrets["secrets"]);
-    private challenges;
+    private readonly hostname;
     private core;
-    readonly request: Record<keyof typeof Roblox.WebAPIs, <M = any>(method: Methods, path: string, options?: Options) => Promise<ResolvedResponse<M>>>;
+    readonly request: Record<keyof typeof Roblox.Cloud.CloudAPIs, <M = any>(method: Methods, path: string, options?: Options) => Promise<ResolvedResponse<M>>>;
     handle<M>(response: ResolvedResponse<M>): ResolvedResponse<M> & {
         ok: true;
     };
 }
-type Methods = "GET" | "POST" | "PATCH" | "HEAD" | "PUT" | "DELETE";
+type Methods = "GET" | "POST";
 type ResolvedResponse<Model = any> = (Response & {
     ok: true;
     data: Model;
 }) | (Response & {
     ok: false;
-    data: Roblox.WebModels.ErrorModel;
+    data: Roblox.CloudModels.ErrorModel;
 });
 type Options = {
     version?: 0 | 1 | 2 | 3;
-    cookie?: true;
-    TSV?: true;
-    CSRF?: true;
-    body?: Record<string, any>;
+    key?: true;
+    client?: true;
+    bearer?: string;
     params?: Record<string, any>;
-};
+} & Partial<Records.OnlyOne<{
+    form: Record<string, any>;
+    body: Record<string, any>;
+}>>;
 export declare class Module {
     protected secrets: Raw["secrets"];
     protected request: Raw["request"];

@@ -2,7 +2,7 @@ import { Arrays } from "helpers";
 import * as Web from "./raw.js";
 import { Roblox } from "../roblox.js";
 import { UserAvatars } from "./users/avatars.js";
-export default class Users extends Web.Module {
+export declare class Users extends Web.Module {
     me(): Promise<Roblox.User>;
     get(query: Roblox.User["id"] | Roblox.User["name"]): Promise<Roblox.FullUser>;
     batch(query: Arrays.AtLeast<Roblox.User["id"]>, options?: Omit<BulkOptions, "strict">): Promise<Arrays.AtLeast<Roblox.BadgeUser>>;

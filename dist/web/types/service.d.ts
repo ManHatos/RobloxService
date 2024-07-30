@@ -7,7 +7,7 @@ export declare enum WebAPIs {
     "economy" = "economy.roblox.com"
 }
 export type User = {
-    id: number;
+    id: bigint;
     name: string;
     displayName: string;
 };
@@ -35,7 +35,7 @@ export declare enum AvatarStates {
     TemporarilyUnavailable = 5
 }
 export type Group = {
-    id: number;
+    id: bigint;
     name: string;
     description?: string;
     owner: Pick<User, "id"> & {
@@ -66,7 +66,7 @@ export type GroupMembership = {
     primary: boolean;
 };
 export type GroupRole = {
-    id: number;
+    id: bigint;
     name: string;
     rank: number;
 };
@@ -75,17 +75,17 @@ export type GroupSale = {
     token: string;
     pending: boolean;
     agent: {
-        id: number;
+        id: bigint;
         type: GroupSaleAgentTypes;
         name: string;
     };
     item: {
-        id: number;
+        id: bigint;
         name: string;
         type: GroupSaleItemTypes;
         place?: {
-            id: number;
-            universe: number;
+            id: bigint;
+            universe: bigint;
             name: string;
         };
     };

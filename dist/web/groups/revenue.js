@@ -30,19 +30,19 @@ export class GroupsRevenue extends Web.SubModule {
                 token: sale.purchaseToken,
                 pending: sale.isPending,
                 agent: {
-                    id: sale.agent.id,
+                    id: BigInt(sale.agent.id),
                     type: Roblox.GroupSaleAgentTypes[sale.agent.type],
                     name: sale.agent.name,
                 },
                 currency: sale.currency,
                 item: {
-                    id: sale.details.id,
-                    name: sale.details.name,
+                    id: BigInt(sale.details.id),
                     type: Roblox.GroupSaleItemTypes[sale.details.type] ?? Roblox.GroupSaleItemTypes.Other,
+                    name: sale.details.name,
                     place: sale.details.place
                         ? {
-                            id: sale.details.place.placeId,
-                            universe: sale.details.place.universeId,
+                            id: BigInt(sale.details.place.placeId),
+                            universe: BigInt(sale.details.place.universeId),
                             name: sale.details.place.name,
                         }
                         : undefined,
@@ -61,7 +61,7 @@ export class GroupsRevenue extends Web.SubModule {
         })
             .then((response) => {
             if (!response.ok) {
-                if (response.status === 400 || user === 0)
+                if (response.status === 400 || user === 0n)
                     throw new AppError({ context: `The user ID \` ${user} \` was not found` });
                 if (response.status === 403)
                     switch (response.data.errors[0]?.code) {

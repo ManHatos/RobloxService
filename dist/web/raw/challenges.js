@@ -1,10 +1,10 @@
 import { AppError, TOTP } from "helpers";
 export class Challenges {
-    auth;
+    secrets;
     request;
     handle;
     constructor(raw) {
-        this.auth = raw["auth"];
+        this.secrets = raw["secrets"];
         this.request = raw.request;
         this.handle = raw.handle;
     }
@@ -21,17 +21,17 @@ export class Challenges {
             .then(this.handle);
     }
     async verify(id, action) {
-        if (!this.auth.TSV)
+        if (!this.secrets.web?.TSV)
             throw new AppError({
                 code: "UNAUTHORIZED",
                 context: "Roblox service TSV secret not set",
             });
         return await this.request
-            .TSV("POST", "/users/" + this.auth.me + "/challenges/authenticator/verify", {
+            .TSV("POST", "/users/" + this.secrets.web?.me + "/challenges/authenticator/verify", {
             body: {
                 challengeId: id,
                 actionType: action,
-                code: TOTP.generate(this.auth.TSV),
+                code: TOTP.generate(this.secrets.web.TSV),
             },
             CSRF: true,
         })

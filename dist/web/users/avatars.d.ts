@@ -1,7 +1,7 @@
 import { Arrays } from "helpers";
 import { Roblox } from "../../roblox.js";
 import * as Web from "../raw.js";
-import Users from "../users.js";
+import { Users } from "../users.js";
 export declare class UserAvatars extends Web.SubModule<Users> {
     full(query: Arrays.AtLeast<Roblox.User["id"]>, options?: {
         size?: "30x30" | "48x48" | "60x60" | "75x75" | "100x100" | "110x110" | "140x140" | "150x150" | "150x200" | "180x180" | "250x250" | "352x352" | "420x420" | "720x720";

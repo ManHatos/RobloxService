@@ -24,12 +24,12 @@ export class GroupsMemberships extends Web.SubModule {
             .then((memberships) => {
             return memberships.map((membership) => ({
                 group: {
-                    id: membership.group.id,
+                    id: BigInt(membership.group.id),
                     name: membership.group.name,
                     description: membership.group.description || undefined,
                     memberCount: membership.group.memberCount,
                     owner: {
-                        id: membership.group.owner.userId,
+                        id: BigInt(membership.group.owner.userId),
                         name: membership.group.owner.username,
                         displayName: membership.group.owner.displayName,
                         verified: membership.group.owner.hasVerifiedBadge,
@@ -38,7 +38,7 @@ export class GroupsMemberships extends Web.SubModule {
                     verified: membership.group.hasVerifiedBadge,
                 },
                 role: {
-                    id: membership.role.id,
+                    id: BigInt(membership.role.id),
                     name: membership.role.name,
                     rank: membership.role.rank,
                 },
@@ -51,7 +51,7 @@ export class GroupsMemberships extends Web.SubModule {
                     code: "NOT_FOUND",
                     context: `The user ID \` ${user} \` is not a member of any group`,
                 });
-            if (typeof group === "number") {
+            if (typeof group === "bigint") {
                 const membership = memberships.find((membership) => membership.group.id === group);
                 if (!membership)
                     throw new AppError({
@@ -64,14 +64,14 @@ export class GroupsMemberships extends Web.SubModule {
         });
     }
     async update(group, user, role) {
-        if (user === this.auth.me)
+        if (user === this.secrets.web?.me)
             throw new AppError({ context: "Cannot change the group role of the logged in user" });
         await this.request
             .groups("PATCH", "/groups/" + group + "/users/" + user, {
             cookie: true,
             CSRF: true,
             body: {
-                roleId: role,
+                roleId: Number(role),
             },
         })
             .then((response) => {

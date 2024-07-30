@@ -1,11 +1,11 @@
 import { AppError } from "helpers";
 import { Roblox } from "../roblox.js";
-import { Auth, logger } from "../helpers/internals.js";
+import { Secrets, logger } from "../helpers/internals.js";
 import { validateCookie } from "../helpers/internals.js";
 import { Challenges } from "./raw/challenges.js";
-export class Raw extends Auth {
-    constructor(auth) {
-        super(auth);
+export class Raw extends Secrets {
+    constructor(secrets) {
+        super(secrets);
         this.challenges = new Challenges(this);
     }
     challenges;
@@ -14,18 +14,20 @@ export class Raw extends Auth {
         logger.info("web core calling: " + endpoint);
         const request = new Request(options.params ? endpoint.concat("?" + new URLSearchParams(options.params)) : endpoint, {
             method,
-            body: options.body ? JSON.stringify(options.body) : undefined,
+            body: options.body
+                ? JSON.stringify(options.body, (_, value) => typeof value === "bigint" ? Number(value) : value)
+                : undefined,
         });
         request.headers.set("CONTENT-TYPE", "application/json");
         request.headers.set("ACCEPT", "*/*");
         request.headers.set("USER-AGENT", "Mozilla/5.0 (Linux x86_64)");
         if (options.TSV === true)
             options.cookie = true;
-        if (validateCookie(this.auth.cookie))
-            request.headers.set(Roblox.WebModels.Headers.Cookie, `.ROBLOSECURITY=` + this.auth.cookie);
+        if (validateCookie(this.secrets.web?.cookie))
+            request.headers.set(Roblox.WebModels.Headers.Cookie, `.ROBLOSECURITY=` + this.secrets.web?.cookie);
         else if (!options.cookie)
             logger.warn("cookie not supplied, service not authenticated");
-        else if (!this.auth.cookie)
+        else if (!this.secrets.web?.cookie)
             throw new AppError({
                 code: "UNAUTHORIZED",
                 context: "Roblox web module requires authentication\n%d",
@@ -35,12 +37,12 @@ export class Raw extends Auth {
                 code: "INVALID",
                 context: "Provided Roblox cookie is invalid",
             });
-        if (options.TSV && !this.auth.TSV)
+        if (options.TSV && !this.secrets.web?.TSV)
             throw new AppError({
                 code: "UNAUTHORIZED",
                 context: "Roblox web module requires TSV\nThe Roblox web API core expected a TSV secret.\n%d",
             });
-        if (options.TSV && !this.auth.me)
+        if (options.TSV && !this.secrets.web?.me)
             throw new AppError({
                 code: "UNAUTHORIZED",
                 context: "Roblox web module requires TSV\nThe Roblox web API core expected logged in account data.\n",
@@ -52,13 +54,13 @@ export class Raw extends Auth {
             request.headers.set(Roblox.WebModels.Headers.ChallengeID, authorization.TSV.id);
             request.headers.set(Roblox.WebModels.Headers.ChallengeMetadata, Buffer.from(JSON.stringify(authorization.TSV.metadata)).toString("base64"));
         }
-        let response = await fetch(request).catch((error) => {
+        let response = (await fetch(request).catch((error) => {
             logger.error(error, "web core");
             throw new AppError({
                 code: "INTERNAL",
                 context: "Roblox service encountered an internal error\nPlease try again shortly. `WEB.CORE` fetch failed.",
             });
-        });
+        }));
         if (options.CSRF === true && !authorization?.CSRF && response.status === 403) {
             logger.warn("attempting CSRF token validation, retrying request...");
             const CSRFToken = response.headers.get(Roblox.WebModels.Headers.CSRF);
@@ -99,9 +101,14 @@ export class Raw extends Auth {
                 CSRF: authorization.CSRF,
             });
         }
-        const resolved = response;
-        resolved.data = resolved.data ?? (await resolved.json());
-        return resolved;
+        try {
+            if (response.headers.get("CONTENT-TYPE")?.startsWith("application/json"))
+                response.data = response.data ?? (await response.json());
+        }
+        catch (error) {
+            logger.error(error, "cloud core JSON parser");
+        }
+        return response;
     }
     request = Object.fromEntries(Object.entries(Roblox.WebAPIs).map(([key, api]) => [
         key,
@@ -130,17 +137,17 @@ export class Raw extends Auth {
     }
 }
 export class Module {
-    auth;
+    secrets;
     request;
     handle;
     constructor(raw) {
-        this.auth = raw["auth"];
+        this.secrets = raw["secrets"];
         this.request = raw.request;
         this.handle = raw.handle;
     }
 }
 export class SubModule extends Module {
     constructor(module) {
-        super(new Raw(module["auth"]));
+        super(new Raw(module["secrets"]));
     }
 }

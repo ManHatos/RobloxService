@@ -36,14 +36,14 @@ export class Groups extends Web.Module {
                     context: `The group ID \` ${id} \` was not found`,
                 });
             return {
-                id: group.id,
+                id: BigInt(group.id),
                 name: group.name,
+                description: group.description || undefined,
                 owner: {
-                    id: group.owner.id,
+                    id: BigInt(group.owner.id),
                     type: Roblox.GroupOwnerTypes[group.owner.type],
                 },
                 verified: group.hasVerifiedBadge,
-                description: group.description || undefined,
                 createdAt: new Date(group.created),
             };
         })
@@ -68,7 +68,7 @@ export class Groups extends Web.Module {
                         ? {
                             message: full.shout.body,
                             author: {
-                                id: full.shout.poster.userId,
+                                id: BigInt(full.shout.poster.userId),
                                 name: full.shout.poster.username,
                                 displayName: full.shout.poster.displayName,
                                 verified: full.shout.poster.hasVerifiedBadge,
