@@ -8,6 +8,7 @@ export const authorizationURL = (id, redirect, scopes, grant = "code", security)
         scope: scopes.join(" "),
         response_type: grant,
         ...(security?.state ? { state: security.state } : {}),
+        ...(security?.nonce ? { nonce: security.nonce } : {}),
         ...(security?.challenge
             ? { code_challenge: security.challenge, code_challenge_method: "S256" }
             : {}),
