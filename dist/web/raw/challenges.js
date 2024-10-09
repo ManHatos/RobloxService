@@ -8,7 +8,10 @@ export class Challenges {
         this.request = raw.request;
         this.handle = raw.handle;
     }
-    async continue(challenge) {
+    /** Continue a challenge after successfully verifying, Roblox requires calling this endpoint after any successful challenge completion */
+    async continue(
+    /** The challenge answer metadata */
+    challenge) {
         await this.request
             .core("POST", "/challenge/v1/continue", {
             body: {
@@ -20,7 +23,16 @@ export class Challenges {
         })
             .then(this.handle);
     }
-    async verify(id, action) {
+    /** Verifies a TSV challenge using a TOTP
+     * @note Service web API account info must be set or fetched
+     * @note Service web API TSV secret must be set
+     * @note `TSV.continue` must be called before finally retrying the challenged request
+     */
+    async verify(
+    /** The TSV challenge metadata ID */
+    id, 
+    /** The TSV metadata action type */
+    action) {
         if (!this.secrets.web?.TSV)
             throw new AppError({
                 code: "UNAUTHORIZED",
@@ -58,7 +70,14 @@ export class Challenges {
             return this.handle(response).data.verificationToken;
         });
     }
-    metadata(token, id, type, options) {
+    /** Generate verification challenge metadata, by default does not remember device` */
+    metadata(
+    /** The verification token from successful exchange */
+    token, 
+    /** The TSV challenge metadata ID */
+    id, 
+    /** The TSV challenge action type */
+    type, options) {
         return {
             actionType: type,
             challengeId: id,

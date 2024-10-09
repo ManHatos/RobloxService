@@ -63,7 +63,14 @@ export class GroupsMemberships extends Web.SubModule {
             return memberships;
         });
     }
-    async update(group, user, role) {
+    /** Update a group member's role */
+    async update(
+    /** The group ID to manage */
+    group, 
+    /** The user ID to manage */
+    user, 
+    /** The role ID to manage */
+    role) {
         if (user === this.secrets.web?.me)
             throw new AppError({ context: "Cannot change the group role of the logged in user" });
         await this.request

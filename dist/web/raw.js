@@ -8,8 +8,20 @@ export class Raw extends Secrets {
         super(secrets);
         this.challenges = new Challenges(this);
     }
+    /** Internal module for dealing with challenges */
     challenges;
-    async core(api, method, path, options = {}, authorization) {
+    /** The heart of the web API module, handles all requests to supported Roblox web APIs */
+    async core(
+    /** The Roblox web API hostname */
+    api, 
+    /** The request's HTTP method */
+    method, 
+    /** The endpoint's path */
+    path, 
+    /** Additional HTTP and helper options */
+    options = {}, 
+    /** Internal retry authorization data */
+    authorization) {
         const endpoint = "https://" + api + (options.version !== 0 ? `/v${options.version ?? 1}` : "") + path;
         logger.info("web core calling: " + endpoint);
         const request = new Request(options.params ? endpoint.concat("?" + new URLSearchParams(options.params)) : endpoint, {
@@ -110,10 +122,12 @@ export class Raw extends Secrets {
         }
         return response;
     }
+    /** Send direct authenticated requests to supported Roblox web APIs */
     request = Object.fromEntries(Object.entries(Roblox.WebAPIs).map(([key, api]) => [
         key,
         (method, path, options) => this.core(api, method, path, ["core"].includes(key) ? { ...options, version: 0 } : options),
     ]));
+    /** Handles generic Roblox web API responses, throws on error */
     handle(response) {
         if (response.ok)
             return response;
@@ -136,6 +150,7 @@ export class Raw extends Secrets {
         }
     }
 }
+/** Roblox web API module template */
 export class Module {
     secrets;
     request;
@@ -146,6 +161,7 @@ export class Module {
         this.handle = raw.handle;
     }
 }
+/** Roblox web API submodule template */
 export class SubModule extends Module {
     constructor(module) {
         super(new Raw(module["secrets"]));

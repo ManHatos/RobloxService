@@ -82,7 +82,10 @@ export class Groups extends Web.Module {
                 return group;
         });
     }
-    async currency(id) {
+    /** Return a group's currency (Robux) amount */
+    async currency(
+    /** The group ID to query */
+    id) {
         return this.request
             .economy("GET", "/groups/" + id + "/currency", {
             cookie: true,
@@ -99,6 +102,8 @@ export class Groups extends Web.Module {
             return this.handle(response).data.robux ?? 0;
         });
     }
+    /** Interact with group memberships */
     memberships = new GroupsMemberships(this);
+    /** Interact with group revenue */
     revenue = new GroupsRevenue(this);
 }

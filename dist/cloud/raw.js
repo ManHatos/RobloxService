@@ -5,8 +5,20 @@ export class Raw extends Secrets {
     constructor(secrets) {
         super(secrets);
     }
+    /** Open cloud base hostname */
     hostname = "apis.roblox.com";
-    async core(route, method, path, options = {}, retries) {
+    /** The heart of the open cloud API module, handles all requests to supported Roblox open cloud APIs */
+    async core(
+    /** The Roblox open cloud API route */
+    route, 
+    /** The request's HTTP method */
+    method, 
+    /** The endpoint's path */
+    path, 
+    /** Additional HTTP and helper options */
+    options = {}, 
+    /** Internal operation retry counter */
+    retries) {
         const endpoint = "https://" +
             this.hostname +
             route +
@@ -55,10 +67,12 @@ export class Raw extends Secrets {
         }
         return response;
     }
+    /** Send direct authenticated requests to supported Roblox open cloud APIs */
     request = Object.fromEntries(Object.entries(Roblox.Cloud.CloudAPIs).map(([key, api]) => [
         key,
         (method, path, options) => this.core(api, method, path, options),
     ]));
+    /** Handles generic Roblox open cloud API responses, throws on error */
     handle(response) {
         if (response.ok)
             return response;
@@ -81,6 +95,7 @@ export class Raw extends Secrets {
         }
     }
 }
+/** Roblox open cloud API module template */
 export class Module {
     secrets;
     request;
@@ -91,6 +106,7 @@ export class Module {
         this.handle = raw.handle;
     }
 }
+/** Roblox open cloud API submodule template */
 export class SubModule extends Module {
     constructor(module) {
         super(new Raw(module["secrets"]));

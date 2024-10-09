@@ -1,3 +1,4 @@
+/** Supported Roblox web APIs */
 export var WebAPIs;
 (function (WebAPIs) {
     WebAPIs["core"] = "apis.roblox.com";
@@ -7,6 +8,7 @@ export var WebAPIs;
     WebAPIs["TSV"] = "twostepverification.roblox.com";
     WebAPIs["economy"] = "economy.roblox.com";
 })(WebAPIs || (WebAPIs = {}));
+/** Roblox user avatar states */
 export var AvatarStates;
 (function (AvatarStates) {
     AvatarStates[AvatarStates["Error"] = 0] = "Error";
@@ -16,15 +18,18 @@ export var AvatarStates;
     AvatarStates[AvatarStates["Blocked"] = 4] = "Blocked";
     AvatarStates[AvatarStates["TemporarilyUnavailable"] = 5] = "TemporarilyUnavailable";
 })(AvatarStates || (AvatarStates = {}));
+/** Roblox group owner types */
 export var GroupOwnerTypes;
 (function (GroupOwnerTypes) {
     GroupOwnerTypes[GroupOwnerTypes["User"] = 0] = "User";
 })(GroupOwnerTypes || (GroupOwnerTypes = {}));
+/** Roblox group sales agent types */
 export var GroupSaleAgentTypes;
 (function (GroupSaleAgentTypes) {
     GroupSaleAgentTypes[GroupSaleAgentTypes["User"] = 0] = "User";
     GroupSaleAgentTypes[GroupSaleAgentTypes["Group"] = 1] = "Group";
 })(GroupSaleAgentTypes || (GroupSaleAgentTypes = {}));
+/** Roblox group sales item types */
 export var GroupSaleItemTypes;
 (function (GroupSaleItemTypes) {
     GroupSaleItemTypes[GroupSaleItemTypes["Other"] = 0] = "Other";
@@ -32,11 +37,13 @@ export var GroupSaleItemTypes;
     GroupSaleItemTypes[GroupSaleItemTypes["Asset"] = 2] = "Asset";
     GroupSaleItemTypes[GroupSaleItemTypes["DeveloperProduct"] = 3] = "DeveloperProduct";
 })(GroupSaleItemTypes || (GroupSaleItemTypes = {}));
+/** Roblox group payout types */
 export var GroupPayoutTypes;
 (function (GroupPayoutTypes) {
     GroupPayoutTypes[GroupPayoutTypes["Fixed"] = 1] = "Fixed";
     GroupPayoutTypes[GroupPayoutTypes["Percentage"] = 2] = "Percentage";
 })(GroupPayoutTypes || (GroupPayoutTypes = {}));
+/** Roblox group payout recipient types */
 export var GroupPayoutRecipientTypes;
 (function (GroupPayoutRecipientTypes) {
     GroupPayoutRecipientTypes[GroupPayoutRecipientTypes["User"] = 0] = "User";

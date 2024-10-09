@@ -2,7 +2,13 @@ import { AppError } from "helpers";
 import { Roblox } from "../roblox.js";
 import * as Cloud from "./raw.js";
 export class OAuth2 extends Cloud.Module {
-    async exchange(code, security) {
+    /** Exchange an authorization code for an access token
+     * @note The access token is valid for only 15 minutes
+     * @note The access token can be invalidated before it expires if a user revokes the authorization
+     */
+    async exchange(
+    /** The authorization code */
+    code, security) {
         return await this.request
             .OAuth2("POST", "/token", {
             client: true,
@@ -24,7 +30,11 @@ export class OAuth2 extends Cloud.Module {
             expiresAt: new Date(response.expires_in * 1000 + (response.date ? Date.parse(response.date) : Date.now())),
         }));
     }
-    async authorized(bearer) {
+    /** Return a bearer access token's authorized user ID */
+    async authorized(
+    /** The bearer access token */
+    bearer) {
+        // @ts-ignore
         return await this.request
             .OAuth2("GET", "/userinfo", {
             bearer,
@@ -36,7 +46,12 @@ export class OAuth2 extends Cloud.Module {
                 return BigInt(response.data.sub);
         });
     }
-    async revoke(token) {
+    /** Revoke an authorization session using a refresh token
+     * @note This endpoint is a mess and always returns an empty `200` response, so the promise will always resolve even if the token was not revoked or does not exist
+     */
+    async revoke(
+    /** The refresh token */
+    token) {
         await this.request
             .OAuth2("POST", "/token/revoke", {
             client: true,

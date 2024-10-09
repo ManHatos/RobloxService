@@ -3,7 +3,11 @@ import { Roblox } from "../../roblox.js";
 import * as Web from "../raw.js";
 import { logger } from "../../helpers/internals.js";
 export class UserAvatars extends Web.SubModule {
-    async full(query, options) {
+    /** Return full body avatar shots by user IDs, defaults to `420x420` and `PNG` */
+    async full(
+    /** The user IDs to query */
+    query, options) {
+        // @ts-ignore
         return await this.request
             .thumbnails("GET", "/users/avatar", {
             params: {
@@ -46,13 +50,18 @@ export class UserAvatars extends Web.SubModule {
                 avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
                 if (pending.length !== 0) {
                     logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    // @ts-ignore
                     avatars.push(...(await this.full(pending, options)));
                 }
             }
             return avatars;
         });
     }
-    async bust(query, options) {
+    /** Return bust avatar shots (head, neck, and a variable portion of chest and shoulders) by user IDs, defaults to `420x420`, `PNG` and not circular */
+    async bust(
+    /** The user IDs to query */
+    query, options) {
+        // @ts-ignore
         return await this.request
             .thumbnails("GET", "/users/avatar-bust", {
             params: {
@@ -95,13 +104,18 @@ export class UserAvatars extends Web.SubModule {
                 avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
                 if (pending.length !== 0) {
                     logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    // @ts-ignore
                     avatars.push(...(await this.bust(pending, options)));
                 }
             }
             return avatars;
         });
     }
-    async head(query, options) {
+    /** Return avatar head shots by user IDs, defaults to `420x420`, `PNG` and not circular */
+    async head(
+    /** The user IDs to query */
+    query, options) {
+        // @ts-ignore
         return await this.request
             .thumbnails("GET", "/users/avatar-headshot", {
             params: {
@@ -144,6 +158,7 @@ export class UserAvatars extends Web.SubModule {
                 avatars = avatars.filter((avatar) => avatar.state !== Roblox.AvatarStates.Pending);
                 if (pending.length !== 0) {
                     logger.warn(`Retrying ${pending.length} pending avatar(s)...`);
+                    // @ts-ignore
                     avatars.push(...(await this.head(pending, options)));
                 }
             }

@@ -2,6 +2,7 @@ import { AppError } from "helpers";
 import * as Web from "./raw.js";
 import { UserAvatars } from "./users/avatars.js";
 export class Users extends Web.Module {
+    /** Return the current authenticated base user */
     async me() {
         return await this.request
             .users("GET", "/users/authenticated", {
@@ -24,7 +25,12 @@ export class Users extends Web.Module {
             displayName: user.displayName,
         }));
     }
-    async get(query) {
+    /** Return detailed user information by username or ID
+     * @warning Using usernames will make 2 requests to fetch the full user, use `users.batch` for basic user information
+     */
+    async get(
+    /** The user ID or username to query */
+    query) {
         if (typeof query === "string") {
             if (query.length < 3)
                 throw new AppError({
@@ -102,6 +108,7 @@ export class Users extends Web.Module {
                     code: "NOT_FOUND",
                     context: "No users found",
                 });
+            // @ts-ignore
             return users.map((user) => ({
                 id: BigInt(user.id),
                 name: user.name,
@@ -134,6 +141,7 @@ export class Users extends Web.Module {
                     code: "NOT_FOUND",
                     context: "No users found",
                 });
+            // @ts-ignore
             return users.map((user) => ({
                 id: BigInt(user.id),
                 name: user.name,
@@ -147,12 +155,18 @@ export class Users extends Web.Module {
                 context: "Query is of invalid type\nAll array members must be of type `User.id` or `User.name`.",
             });
     }
-    async search(query, options) {
+    /** Search for Roblox users by keyword, by default limited to `25`
+     * @warning This endpoint has extremely high rate limits for unauthenticated requests, authentication is advised
+     */
+    async search(
+    /** The keyword to query */
+    query, options) {
         if (query.length < 3)
             throw new AppError({
                 code: "INVALID",
                 context: `The query \` ${query} \` is too short`,
             });
+        /** @todo pagination */
         const users = await this.request
             .users("GET", "/users/search", {
             params: {
@@ -176,6 +190,7 @@ export class Users extends Web.Module {
                 code: "NOT_FOUND",
                 context: "No users found",
             });
+        // @ts-ignore
         return users.map((user) => ({
             id: BigInt(user.id),
             name: user.name,
@@ -184,5 +199,6 @@ export class Users extends Web.Module {
             verified: user.hasVerifiedBadge,
         }));
     }
+    /** Return users' avatars */
     avatars = new UserAvatars(this);
 }

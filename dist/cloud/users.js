@@ -2,7 +2,12 @@ import { AppError } from "helpers";
 import { Roblox } from "../roblox.js";
 import * as Cloud from "./raw.js";
 export class Users extends Cloud.Module {
-    async get(user) {
+    /** Return detailed user information by ID
+     * @note Banned users will result in an error
+     */
+    async get(
+    /** The user ID to query */
+    user) {
         return await this.request
             .users("GET", "/users/" + user, {
             version: 2,

@@ -1,3 +1,4 @@
+/** Useful Roblox web API headers used across APIs. */
 export var Headers;
 (function (Headers) {
     Headers["Cookie"] = "COOKIE";
@@ -6,11 +7,13 @@ export var Headers;
     Headers["ChallengeType"] = "RBLX-CHALLENGE-TYPE";
     Headers["ChallengeMetadata"] = "RBLX-CHALLENGE-METADATA";
 })(Headers || (Headers = {}));
+/** Roblox web API challenge types for various security systems. */
 export var ChallengeTypes;
 (function (ChallengeTypes) {
     ChallengeTypes["Captcha"] = "captcha";
     ChallengeTypes["TSV"] = "twostepverification";
 })(ChallengeTypes || (ChallengeTypes = {}));
+/** Roblox TSV action types. */
 export var TSVActionType;
 (function (TSVActionType) {
     TSVActionType[TSVActionType["Unknown"] = 0] = "Unknown";
@@ -23,6 +26,7 @@ export var TSVActionType;
     TSVActionType[TSVActionType["Generic"] = 7] = "Generic";
     TSVActionType[TSVActionType["GenericWithRecoveryCodes"] = 8] = "GenericWithRecoveryCodes";
 })(TSVActionType || (TSVActionType = {}));
+/** Group owner type with possible values. */
 export var GroupOwnerTypes;
 (function (GroupOwnerTypes) {
     GroupOwnerTypes["User"] = "User";

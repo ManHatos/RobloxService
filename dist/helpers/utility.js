@@ -1,7 +1,25 @@
-export const profileURL = (id) => "https://roblox.com/users/" + id;
-export const groupURL = (id) => "https://roblox.com/groups/" + id;
-export const placeURL = (id) => "https://roblox.com/games/" + id;
-export const authorizationURL = (id, redirect, scopes, grant = "code", security) => "https://apis.roblox.com/oauth/v1/authorize?" +
+/** Return a Roblox user's profile page */
+export const profileURL = (
+/** The user ID */
+id) => "https://roblox.com/users/" + id;
+/** Return a Roblox group's home page */
+export const groupURL = (
+/** The group ID */
+id) => "https://roblox.com/groups/" + id;
+/** Return a Roblox place (game)'s home page */
+export const placeURL = (
+/** The place ID */
+id) => "https://roblox.com/games/" + id;
+/** Return an OAuth2 authorization URL */
+export const authorizationURL = (
+/** The client ID */
+id, 
+/** The redirect URI */
+redirect, 
+/** The scopes to request */
+scopes, 
+/** The response grant type */
+grant = "code", security) => "https://apis.roblox.com/oauth/v1/authorize?" +
     new URLSearchParams({
         client_id: id,
         redirect_uri: redirect,

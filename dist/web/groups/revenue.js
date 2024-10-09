@@ -2,7 +2,14 @@ import { AppError } from "helpers";
 import { Roblox } from "../../roblox.js";
 import * as Web from "../raw.js";
 export class GroupsRevenue extends Web.SubModule {
-    async sales(id, options) {
+    /** Return a group's latest sales, by default limited to 10
+     * @note Uses an undocumented endpoint with unknown behaviour, use at risk
+     * @note This endpoint is extremely slow and may take a couple of seconds to fetch, increase `limit` with caution
+     */
+    async sales(
+    /** The group ID to query */
+    id, options) {
+        // @ts-ignore
         return this.request
             .economy("GET", "/groups/" + id + "/transactions", {
             version: 2,
@@ -51,7 +58,14 @@ export class GroupsRevenue extends Web.SubModule {
             }));
         });
     }
-    async eligible(group, user, options) {
+    /** Check whether a group member is eligible for payouts, by defaults throws if they are not a member of the group
+     * @note Reqiures the logged in user to have payout permissions
+     */
+    async eligible(
+    /** The group ID to fetch */
+    group, 
+    /** The user ID to fetch */
+    user, options) {
         return await this.request
             .economy("GET", "/groups/" + group + "/users-payout-eligibility", {
             cookie: true,
@@ -84,7 +98,17 @@ export class GroupsRevenue extends Web.SubModule {
                 return false;
         });
     }
-    async pay(group, user, amount) {
+    /** Pay out a group member in Robux from group funds
+     * @note The recipient user must have been a member of the group for at least 14 days, use `revenue.eligible` to check eligibility
+     * @note The current implementation only supports `GroupPayoutTypes.FixedAmount` and is limited to 1 recipient of type `GroupPayoutRecipientTypes.User`
+     */
+    async pay(
+    /** The group ID to pay from */
+    group, 
+    /** The user ID to pay */
+    user, 
+    /** The amount of Robux to pay */
+    amount) {
         if (amount <= 0)
             throw new AppError({ context: `The amount \` ${amount} \` is invalid` });
         await this.request
